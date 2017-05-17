@@ -1,0 +1,114 @@
+
+set title "Fast Reactor Fuel Pin"
+
+% --- Geometry:
+
+surf	1	cyl       0.0    0.0    0.1 	    %Void radius
+surf	2	cyl       0.0    0.0    0.45       	%Pellet radius
+surf	3	cyl       0.0    0.0    0.465      	%Inner radius of cladding
+surf	4	cyl       0.0    0.0    0.525       %Outer radius of cladding
+surf	5	hexxc	  0.0	 0.0	0.693	    %1/2 pitch
+
+% --- Cell definitions
+
+cell 5 0 void       -1
+cell 1 0 pin_inner  1 -2
+cell 6 0 void       2 -3
+cell 2 0 Cladding   3 -4
+cell 3 0 Lead_CR    4 -5
+cell 4 0 outside    5
+
+% Fuel, blue
+mat pin_inner  -10.443 rgb 31 119 180
+U-234.15c 	7.9091E-06
+U-235.15c 	1.0783E-03
+U-236.15c 	2.6364E-05
+U-238.15c 	2.6252E-01
+Pu-238.15c	1.6935E-03
+Pu-239.15c	4.1123E-02
+Pu-240.15c	1.9439E-02
+Pu-241.15c	4.3773E-03
+Pu-242.15c	5.4931E-03
+Am-241.15c	9.3764E-04
+O-16.15c 	66.33E-02
+
+% Lead, orange
+mat Lead_CR -10.515 rgb 255 127 14
+Pb-204.06c	-1.4e-2
+Pb-206.06c	-24.1e-2
+Pb-207.06c	-22.1e-2
+Pb-208.03c	-52.4e-2
+
+% Cladding dark green
+mat Cladding -7.95 rgb 44 160 44
+C-12.06c	-0.09E-02
+Cr-52.06c 	-12.1E-02
+Ni-58.06c	-10.6E-02
+Mn-55.06c	-1.5E-02
+Mo-98.06c	-0.362E-02
+Ti-48.06c	-2.95E-03
+Si-28.06c	-0.784E-02
+B-11.06c	-4.81E-05
+P-31.06c	-0.045E-02
+N-14.06c	-0.015E-02
+S-32.06c	-1.43E-04
+Al-27.06c 	-0.015E-02
+Zr-90.06c	-1.54E-04
+V-51.06c 	-0.03E-02
+W-184.06c	-9.19E-05
+Nb-93.06c	-0.015E-02
+Ta-181.06c	-0.015E-02
+Cu-63.06c 	-2.08E-04
+Co-59.06c	-0.03E-02
+Ca-40.06c	-2.91E-04
+Fe-56.06c 	-59.9E-02
+
+
+% --- Cross section library file path:
+
+set acelib "sss_endfb7u.xsdata"
+
+% --- Periodic boundary condition:
+
+set bc 3
+
+% --- Group constant generation:
+
+% universe = 0 (homogenization over all space)
+% symmetry = 12
+% 2-group structure (group boundary at 0.625 eV)
+
+set gcu  0
+set sym  12
+set nfg  2  0.625E-6
+
+% --- ST/WDT Parameters:
+
+%set dt 0.9
+set wdt yes 1.0
+
+% --- File output
+
+set outp 100
+
+% --- Neutron population and criticality cycles:
+set pop 20000 1000000 50
+
+% --- Geometry and mesh plots:
+
+plot 3 500 500
+mesh 3 500 500
+
+% --- Decay and fission yield libraries:
+
+set declib "/xs/sss_endfb7.dec"
+set nfylib "/xs/sss_endfb7.nfy"
+
+% --- Reduce energy grid size:
+
+set egrid 5E-5 1E-9 15.0
+
+% --- Cut-offs:
+
+set fpcut   1E-6
+set stabcut 1E-12
